@@ -13,6 +13,11 @@ https://docs.google.com/spreadsheets/d/1DiMnvymQDm9oPXcnem6V6pikuHkdCXMMVo1RAPmN
 
 Primero eliminé las filas vacías que había al final del archivo y me quedé con **196 registros válidos**. Después creé la tabla de trabajo y revisé la columna name, que funciona como identificador único de cada paciente. Comprobé que no había valores vacíos ni duplicados. A continuación, en el resto de variables numéricas sustituí los puntos por comas para adaptarlos a mi configuración regional y convertí todas las columnas a tipo número, para poder trabajar con ellas en Google Sheets. Finalmente, verifiqué que ninguna columna tuviera valores faltantes, dejando los datos listos y consistentes para el análisis.
 
+## Columnas derivadas
+
+**Fo_bin_10Hz**: agrupa el valor continuo de frecuencia fundamental (Fo) en intervalos de 10 Hz
+
+Lógica de cálculo: =INT(B101/10)*10
 
 # Análisis Descriptivo de los Datos
 
