@@ -17,11 +17,12 @@ from actor a
 where a.actor_id between 30 and 40;
 
 -- 4. Obtén las películas cuyo idioma coincide con el idioma original.
--- aquí en la BBDD viene todo a NULL el original_language_id
+-- aquí en la BBDD viene todo a NULL el original_language_id, así que no habrá resultados en la consulta
 select f.film_id, f.title
 from film f
 join "language" l 
-on f.original_language_id  = l.language_id;
+on f.original_language_id  = l.language_id
+where f.original_language_id is not null;
 
 -- 5. Ordena las películas por duración de forma ascendente.
 select f.title, f.length 
@@ -29,9 +30,10 @@ from film f
 order by f.length asc;
 
 -- 6. Encuentra el nombre y apellido de los actores que tengan ‘Allen’ en su apellido.
+-- añado trim por si hay espacios
 select *
 from actor a
-where a.last_name ILIKE 'Allen';
+where trim(a.last_name) ILIKE '%Allen%';
 
 -- 7. Encuentra la cantidad total de películas en cada clasificación de la tabla
 -- “film” y muestra la clasificación junto con el recuento.
@@ -63,6 +65,20 @@ on p.rental_id =r.rental_id
 group by date(r.rental_date )
 order by day desc
 limit 1 offset 2;
+
+with daily_cost as (
+	select r.rental_date::date as day,
+	coalesce(sum(p.amount), 0) as cost
+	from rental r 
+	join payment p 
+	on p.rental_id = r.rental_id 
+	group by r.rental_date::date
+)
+select day, cost
+from daily_cost
+order by day desc
+limit 1 offset 2;
+
 
 -- 12. Encuentra el título de las películas en la tabla “film” que no sean ni ‘NC-17’ 
 -- ni ‘G’ en cuanto a su clasificación.
@@ -218,7 +234,7 @@ order by film_count;
 -- ellas, incluso si algunas películas no tienen actores asociados.
 select f.title, concat(a.first_name , ' ', a.last_name ) as actors
 from film f 
-full join film_actor fa
+left join film_actor fa
 on f.film_id = fa.film_id 
 left join actor a
 on fa.actor_id = a.actor_id 
@@ -228,9 +244,9 @@ order by f.title;
 -- actuado, incluso si algunos actores no han actuado en ninguna película.
 select concat(a.first_name , ' ', a.last_name ) as actors, f.title 
 from actor a 
-full join film_actor fa 
+left join film_actor fa 
 on a.actor_id = fa.actor_id 
-full join film f 
+left join film f 
 on fa.film_id = f.film_id
 order by a.first_name ;
 
@@ -245,19 +261,6 @@ group by f.title
 order by f.title ;
 
 -- 34. Encuentra los 5 clientes que más dinero se hayan gastado con nosotros.
-select c.customer_id,
-  concat(c.first_name , ' ', c.last_name) as customer,
-  top5.total_spent
-from customer c
-join (
-  select p.customer_id, sum(p.amount) as total_spent
-  from payment p
-  group by p.customer_id
-  order by sum(p.amount) desc 
-  limit 5
-) top5 on top5.customer_id = c.customer_id
-order by top5.total_spent desc;
-
 with top5 as (
   select p.customer_id, sum(p.amount) as total_spent
   from payment p
@@ -502,17 +505,27 @@ select concat(a.first_name ,' ', a.last_name )
 from actor a
 where not exists (
 	select 1
-	from category c 
-	join film f 
-	on c.category_id = f.film_id
-	join film_actor fa 
-	on f.film_id = fa.film_id 
+	from film_actor fa
+  	join film_category fc
+  	on fc.film_id = fa.film_id
+  	join category c 
+  	on c.category_id = fc.category_id 
 	where c."name" = 'Music'
 	and fa.actor_id = a.actor_id 
 )
 order by a.last_name , a.first_name;
 
 -- 57. Encuentra el título de todas las películas que fueron alquiladas por más de 8 días.
+select distinct on (f.title) f.title, 
+	r.return_date - r.rental_date as rent_days
+from film f
+inner join inventory i 
+on f.film_id = i.film_id
+inner join rental r
+on r.inventory_id = i.inventory_id 
+where extract (epoch from (r.return_date - r.rental_date)) / 86400 > 8
+order by f.title ;
+
 select distinct on (f.title) f.title, 
 	r.return_date - r.rental_date as rent_days
 from film f
