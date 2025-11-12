@@ -32,24 +32,22 @@ texto2 = (
 )
 
 def procesa_texto(opcion, texto, *args):
-    match opcion:
-        case "contar":
-            return contar_palabras(texto)
-        
-        case "reemplazar":
-            if len(args) != 2:
-                raise TypeError("reemplazar requiere dos argumentos: palabra, palabra_nueva")
-            palabra, palabra_nueva = args
-            palabra_er = rf'\b{re.escape(palabra)}\b'
-            return reemplazar_palabras(texto, palabra_er, palabra_nueva)
-        case "eliminar":
-            if len(args) != 1:
-                raise TypeError("eliminar requiere un argumento: palabra")
-            palabra = args[0]
-            palabra_er = rf'\b{re.escape(palabra)}\b'
-            return eliminar_palabra(texto, palabra_er)
-        case _:
-            raise ValueError("Opción inválida")
+    if opcion == "contar":
+        return contar_palabras(texto)
+    elif opcion == "reemplazar":
+        if len(args) != 2:
+            raise TypeError("reemplazar requiere dos argumentos: palabra, palabra_nueva")
+        palabra, palabra_nueva = args
+        palabra_er = rf'\b{re.escape(palabra)}\b'
+        return reemplazar_palabras(texto, palabra_er, palabra_nueva)
+    elif opcion == "eliminar":
+        if len(args) != 1:
+            raise TypeError("eliminar requiere un argumento: palabra")
+        palabra = args[0]
+        palabra_er = rf'\b{re.escape(palabra)}\b'
+        return eliminar_palabra(texto, palabra_er)
+    else:
+        raise ValueError("Opción inválida")
         
 def contar_palabras(texto):
     # Extrae palabras (unicode), normaliza y cuenta

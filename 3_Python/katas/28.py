@@ -10,20 +10,14 @@ lista_elementos = [42, "repetido", -7, 3.14, True, "QA", 0, "python", 9999, Fals
  "ticket-42", 88, "ok", 256, "QA", 42, "refactor", 2.718, "árbol", -33]
 
 def encuentra_duplicado(lista):
-    """Busca el primer duplicado en una lista
-
-    Args:
-        lista (list): lista de elementos
-
-    Returns:
-        int, float, str, bool: primer elemento repertido
-    """
-    vistos = set()
+    vistos = []
     for elem in lista:
-        clave = (type(elem), elem)
-        if clave in vistos:
-            return elem
-        vistos.add(clave)
+        if elem in vistos:
+            # añado este for porque sino el 0 lo toma como False, y el primer elemento repetido que saca es False
+            for v in vistos:
+                if v == elem and type(v) == type(elem):
+                    return elem
+        vistos.append(elem)
     return None
 
 resultado = encuentra_duplicado(lista_elementos)

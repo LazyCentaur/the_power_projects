@@ -2,7 +2,7 @@
 
 # 9. Escribe una función que tome una lista de nombres de mascotas como parámetro y devuelva una nueva lista
 # excluyendo ciertas mascotas prohibidas en España. La lista de mascotas a excluir es ["Mapache", "Tigre",
-# "Serpiente Pitón", "Cocodrilo", "Oso"].Usa la función filter()
+# "Serpiente Pitón", "Cocodrilo", "Oso"]. Usa la función filter()
 
 mascotas = [
     "Perro", "Gato", "Conejo", "Serpiente Pitón", "Hámster", "Cobaya",
@@ -25,7 +25,9 @@ def excluye_mascotas_prohibidas(lista_mascotas, mascotas_prohibidas):
     """
     if not isinstance(lista_mascotas, list) or not isinstance(mascotas_prohibidas, list):
         raise TypeError("Ambos parámetros deben ser listas")
-    return list(filter(lambda m: isinstance(m, str) and m.casefold() not in mascotas_prohibidas, lista_mascotas))
+    # Convertir mascotas prohibidas a minúsculas para comparación
+    prohibidas_lower = [m.lower() for m in mascotas_prohibidas]
+    return list(filter(lambda m: isinstance(m, str) and m.lower() not in prohibidas_lower, lista_mascotas))
 
 mascotas_permitidas = excluye_mascotas_prohibidas(mascotas, mascotas_prohibidas)
 print(f"Esta es tu lista de mascotas actualizada con las permitidas: {mascotas_permitidas}")

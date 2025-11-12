@@ -21,21 +21,20 @@ def calcula_area(figura, datos):
     
     def es_num(x): return isinstance(x, (int, float)) and not isinstance(x, bool)
     
-    match figura:
-        case "rectangulo":
-            if len(datos) != 2 or not all(es_num(x) for x in datos):
-                raise TypeError("rectangulo requiere (base, altura) numéricos")
-            return round(datos[0] * datos[1], 2)
-        case "circulo":
-            if len(datos) != 1 or not es_num(datos[0]):
-                raise TypeError("circulo requiere (radio,) numérico")
-            return round(math.pi * (datos[0] ** 2), 2)
-        case "triangulo":
-            if len(datos) != 2 or not all(es_num(x) for x in datos):
-                raise TypeError("triangulo requiere (base, altura) numéricos")
-            return round(datos[0] * datos[1] / 2, 2)
-        case _:
-            raise ValueError("Opción inválida")
+    if figura == "rectangulo":
+        if len(datos) != 2 or not all(es_num(x) for x in datos):
+            raise TypeError("rectangulo requiere (base, altura) numéricos")
+        return round(datos[0] * datos[1], 2)
+    elif figura == "circulo":
+        if len(datos) != 1 or not es_num(datos[0]):
+            raise TypeError("circulo requiere (radio,) numérico")
+        return round(math.pi * (datos[0] ** 2), 2)
+    elif figura == "triangulo": 
+        if len(datos) != 2 or not all(es_num(x) for x in datos):
+            raise TypeError("triangulo requiere (base, altura) numéricos")
+        return round(datos[0] * datos[1] / 2, 2)
+    else:
+        raise ValueError("Opción inválida")
         
 print(calcula_area("rectangulo", (7.4, 4)))
 print(calcula_area("circulo", (8.2, )))
