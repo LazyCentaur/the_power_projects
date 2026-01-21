@@ -161,3 +161,7 @@ LOGISTICS DATABASE SCHEMA
 14. TRUCK_UTILIZATION_METRICS (Aggregated)
     - Composite Key: truck_id, month
     - Contains: Monthly equipment utilization summaries
+   
+## Informe explicativo
+
+https://docs.google.com/presentation/d/1EjsqLj4R-RqEn_8pcC53frLXru27ERx8M_5WhOgMlMg/edit?usp=sharing
